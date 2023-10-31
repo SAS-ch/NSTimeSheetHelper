@@ -1,4 +1,5 @@
-from datetime import time
+import random
+from datetime import time, datetime, date, timedelta
 
 import openpyxl.styles.colors
 import requests
@@ -42,11 +43,10 @@ MONTHS_RU = {
     12: "декабрь"
 }
 
-
 grey_fill = PatternFill(start_color="00D3D3D3", end_color="00D3D3D3", fill_type='solid')
 
 
-def fill_workbook_with_data_time_format(workbook, year, month, employee_name, holidays_data):
+def fill_workbook_with_data_time_format(workbook, year, month, employee_name, holidays_data, add_extra_minutes=False):
     """
     Fill the Excel workbook with the provided data and format cells as Time.
 
@@ -63,6 +63,10 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, ho
     # Get the active sheet (assuming the template has only one sheet)
     sheet = workbook.active
 
+    # Get non-working days, reduced working days, and holidays for the given month
+    non_working_days = holidays_data.get(month, {}).get("non_working_days", [])
+    reduced_days = holidays_data.get(month, {}).get("holidays", [])
+
     sheet["A2"] = f"Табель учета рабочего времени за {MONTHS_RU[month]} {year} г."
     sheet["A2"].style = name_style
     # Fill the employee name
@@ -70,25 +74,35 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, ho
     sheet["D3"] = employee_name
     sheet["D3"].style = name_style
 
-    # Define the working hours as datetime.time objects
-    work_start = time(8, 0)
-    lunch_start = time(12, 0)
-    lunch_end = time(13, 0)
-    work_end = time(17, 0)
-    work_end_reduced = time(16, 0)  # For days with 1-hour reduction
-
-    # Get the number of days in the month
     from calendar import monthrange
     _, num_days = monthrange(year, month)
 
-    # Get non-working days, reduced working days, and holidays for the given month
-    non_working_days = holidays_data.get(month, {}).get("non_working_days", [])
-    reduced_days = holidays_data.get(month, {}).get("holidays", [])
+    # Define the working hours as datetime.time objects
+    base_work_start = time(8, 30)
+    base_lunch_start = time(12, 0)
+    base_lunch_end = time(13, 0)
+    base_work_end = time(17, 30)
+    base_work_end_reduced = time(16, 30)  # For days with 1-hour reduction
 
-    # Define the grey fill for non-working days
+    # ... [оставляем все как было]
 
     # Fill the days and working hours
     for day in range(1, num_days + 1):
+        work_start = base_work_start
+        lunch_start = base_lunch_start
+        lunch_end = base_lunch_end
+        work_end = base_work_end
+        work_end_reduced = base_work_end_reduced
+
+        if add_extra_minutes:
+            extra_minutes = random.choice([5, 10, 15])
+            work_start = (datetime.combine(date.today(), work_start) + timedelta(minutes=extra_minutes)).time()
+            lunch_start = (datetime.combine(date.today(), lunch_start) + timedelta(minutes=extra_minutes)).time()
+            lunch_end = (datetime.combine(date.today(), lunch_end) - timedelta(minutes=extra_minutes)).time()
+            work_end = (datetime.combine(date.today(), work_end) - timedelta(minutes=extra_minutes)).time()
+            work_end_reduced = (
+                    datetime.combine(date.today(), work_end_reduced) - timedelta(minutes=extra_minutes)).time()
+
         row = day + 7  # Because the data starts from row 8
         sheet[f"A{row}"] = day
         sheet[f"A{row}"].style = just_border_style
@@ -96,7 +110,6 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, ho
         if day not in non_working_days:
             sheet[f"B{row}"] = work_start
             sheet[f"B{row}"].style = time_style
-            # sheet[f"B{row}"].border = sheet["C7"].border
             sheet[f"C{row}"] = lunch_start
             sheet[f"C{row}"].style = time_style
             sheet[f"D{row}"] = lunch_end
