@@ -46,7 +46,9 @@ MONTHS_RU = {
 grey_fill = PatternFill(start_color="00D3D3D3", end_color="00D3D3D3", fill_type='solid')
 
 
-def fill_workbook_with_data_time_format(workbook, year, month, employee_name, holidays_data, add_extra_minutes=False):
+def fill_workbook_with_data_time_format(workbook, year, month, employee_name, holidays_data, weekly_schedule,
+                                        add_extra_minutes=False,
+                                        ):
     """
     Fill the Excel workbook with the provided data and format cells as Time.
 
@@ -63,6 +65,8 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, ho
     # Get the active sheet (assuming the template has only one sheet)
     sheet = workbook.active
 
+    # Get the work hours for this day of the week from the weekly_schedule
+
     # Get non-working days, reduced working days, and holidays for the given month
     non_working_days = holidays_data.get(month, {}).get("non_working_days", [])
     reduced_days = holidays_data.get(month, {}).get("holidays", [])
@@ -77,22 +81,22 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, ho
     from calendar import monthrange
     _, num_days = monthrange(year, month)
 
-    # Define the working hours as datetime.time objects
-    base_work_start = time(8, 30)
-    base_lunch_start = time(12, 0)
-    base_lunch_end = time(13, 0)
-    base_work_end = time(17, 30)
-    base_work_end_reduced = time(16, 30)  # For days with 1-hour reduction
-
-    # ... [оставляем все как было]
-
     # Fill the days and working hours
     for day in range(1, num_days + 1):
-        work_start = base_work_start
-        lunch_start = base_lunch_start
-        lunch_end = base_lunch_end
-        work_end = base_work_end
-        work_end_reduced = base_work_end_reduced
+        # Determine the day of the week
+        day_of_week = date(year, month, day).weekday()  # 0 = Понедельник
+
+        # Get the work hours for this day of the week from the weekly_schedule
+        work_hours = weekly_schedule.get(day_of_week, {})
+
+        work_start = work_hours.get('work_start', time(8, 0))
+        lunch_start = work_hours.get('lunch_start', time(12, 0))
+        lunch_end = work_hours.get('lunch_end', time(13, 0))
+        work_end = work_hours.get('work_end', time(17, 0))
+
+        work_end_datetime = datetime.combine(date.today(), work_end)
+        work_end_reduced_datetime = work_end_datetime - timedelta(hours=1)
+        work_end_reduced = work_end_reduced_datetime.time()
 
         if add_extra_minutes:
             extra_minutes = random.choice([5, 10, 15])

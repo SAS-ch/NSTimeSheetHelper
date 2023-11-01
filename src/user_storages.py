@@ -31,6 +31,7 @@ class User:
             return True
 
 
+
 def add_new_user(user: User) -> None:
     cursor.execute(f"INSERT INTO Users VALUES (NULL, '{user.name}', '{user.personnel_number}', '{user.telegram_id}')")
     conn.commit()
