@@ -31,23 +31,23 @@ class User:
             return True
 
 
-def add_new_user(name: string, personnel_number: string, telegram_id: string) -> None:
-    cursor.execute(f"INSERT INTO Users VALUES (NULL, '{name}', '{personnel_number}', '{telegram_id}')")
+def add_new_user(user: User) -> None:
+    cursor.execute(f"INSERT INTO Users VALUES (NULL, '{user.name}', '{user.personnel_number}', '{user.telegram_id}')")
     conn.commit()
 
 
-def remove_user_by_name(name: string) -> None:
-    cursor.execute(f"DELETE FROM Users WHERE username = '{name}'")
+def remove_user_by_name(user: User) -> None:
+    cursor.execute(f"DELETE FROM Users WHERE username = '{user.name}'")
     conn.commit()
 
 
-def remove_user_by_personnel_number(personnel_number: string) -> None:
-    cursor.execute(f"DELETE FROM Users WHERE personnel_number = '{personnel_number}'")
+def remove_user_by_personnel_number(user: User) -> None:
+    cursor.execute(f"DELETE FROM Users WHERE personnel_number = '{user.personnel_number}'")
     conn.commit()
 
 
-def remove_user_by_telegram_id(telegram_id: string) -> None:
-    cursor.execute(f"DELETE FROM Users WHERE telegram_id = '{telegram_id}'")
+def remove_user_by_telegram_id(user: User) -> None:
+    cursor.execute(f"DELETE FROM Users WHERE telegram_id = '{user.telegram_id}'")
     conn.commit()
 
 

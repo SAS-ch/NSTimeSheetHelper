@@ -2,6 +2,7 @@ import unittest
 
 import openpyxl
 
+from src.generate_pdf import convert_to_pdf
 from src.generate_xlsx import fill_workbook_with_data_time_format, get_holidays_from_xmlcalendar
 
 
@@ -17,7 +18,9 @@ class MyTestCase(unittest.TestCase):
 
         # Save the filled workbook to a new file
         output_path_adjusted = "../generated/generated.xlsx"
+        output_path_pdf = "../generated"
         filled_workbook_adjusted.save(output_path_adjusted)
+        convert_to_pdf(output_path_adjusted, output_path_pdf, "C:\Program Files\LibreOffice\program\scalc.exe")
 
 
 if __name__ == '__main__':
