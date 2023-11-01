@@ -45,7 +45,7 @@ MONTHS_RU = {
 
 grey_fill = PatternFill(start_color="00D3D3D3", end_color="00D3D3D3", fill_type='solid')
 
-
+#Todo добавить поддержку летнего режима Шубина
 def fill_workbook_with_data_time_format(workbook, year, month, employee_name, department, holidays_data, weekly_schedule,
                                         add_extra_minutes=False,
                                         ):
