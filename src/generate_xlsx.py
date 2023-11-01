@@ -46,7 +46,7 @@ MONTHS_RU = {
 grey_fill = PatternFill(start_color="00D3D3D3", end_color="00D3D3D3", fill_type='solid')
 
 
-def fill_workbook_with_data_time_format(workbook, year, month, employee_name, holidays_data, weekly_schedule,
+def fill_workbook_with_data_time_format(workbook, year, month, employee_name, department, holidays_data, weekly_schedule,
                                         add_extra_minutes=False,
                                         ):
     """
@@ -77,6 +77,9 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, ho
 
     sheet["D3"] = employee_name
     sheet["D3"].style = name_style
+
+    sheet["D4"] = department
+    sheet["D4"].style = name_style
 
     from calendar import monthrange
     _, num_days = monthrange(year, month)

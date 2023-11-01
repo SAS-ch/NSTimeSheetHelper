@@ -32,6 +32,7 @@ class MyTestCase(unittest.TestCase):
 
         filled_workbook_adjusted = fill_workbook_with_data_time_format(workbook, 2023, 10,
                                                                        "Скипетров Алексей Сергеевич",
+                                                                       "разработки программного обеспечения",
                                                                        get_holidays_from_xmlcalendar(2023),
                                                                        weekly_schedule,
                                                                        add_extra_minutes=True)
