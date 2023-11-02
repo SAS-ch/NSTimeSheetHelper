@@ -45,8 +45,9 @@ MONTHS_RU = {
 
 grey_fill = PatternFill(start_color="00D3D3D3", end_color="00D3D3D3", fill_type='solid')
 
-#Todo добавить поддержку летнего режима Шубина
-def fill_workbook_with_data_time_format(workbook, year, month, employee_name, department, holidays_data, weekly_schedule,
+
+def fill_workbook_with_data_time_format(workbook, year, month, employee_name, department, holidays_data,
+                                        weekly_schedule,
                                         add_extra_minutes=False,
                                         ):
     """
@@ -98,15 +99,24 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, de
         work_end = work_hours.get('work_end', time(17, 0))
 
         work_end_datetime = datetime.combine(date.today(), work_end)
-        work_end_reduced_datetime = work_end_datetime - timedelta(hours=1)
-        work_end_reduced = work_end_reduced_datetime.time()
+
+        # If it's Friday during the summer months, reduce the workday by 1 hour
+        if day_of_week == 4 and month in [6, 7, 8]:
+            work_end_datetime -= timedelta(hours=1)
+            work_end = work_end_datetime.time()
+
+        # If it's a reduced day, reduce by another hour
+        if day in reduced_days:
+            work_end_datetime -= timedelta(hours=1)
+
+        work_end_reduced = work_end_datetime.time()
 
         if add_extra_minutes:
             extra_minutes = random.choice([5, 10, 15])
             work_start = (datetime.combine(date.today(), work_start) + timedelta(minutes=extra_minutes)).time()
             lunch_start = (datetime.combine(date.today(), lunch_start) + timedelta(minutes=extra_minutes)).time()
-            lunch_end = (datetime.combine(date.today(), lunch_end) - timedelta(minutes=extra_minutes)).time()
-            work_end = (datetime.combine(date.today(), work_end) - timedelta(minutes=extra_minutes)).time()
+            lunch_end = (datetime.combine(date.today(), lunch_end) + timedelta(minutes=extra_minutes)).time()
+            work_end = (datetime.combine(date.today(), work_end) + timedelta(minutes=extra_minutes)).time()
             work_end_reduced = (
                     datetime.combine(date.today(), work_end_reduced) - timedelta(minutes=extra_minutes)).time()
 
