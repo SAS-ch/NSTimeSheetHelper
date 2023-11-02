@@ -48,7 +48,7 @@ async def main() -> None:
     await dp.start_polling(bot)
 
 
-@dp.message(Command("getTimeSheet"))
+@dp.message(Command("get_time_sheet"))
 async def get_time_sheet(message: Message) -> None:
     user = user_storages.get_user_by_telegram_id(message.from_user.id)
     if user.isUserExist():
@@ -79,12 +79,12 @@ async def get_time_sheet(message: Message) -> None:
                     f"Табель_{user.name}_за_{MONTHS_RU[month]}_{year}год.pdf"))
 
 
-@dp.message(Command("getMyId"))
+@dp.message(Command("get_my_id"))
 async def get_my_id(message: Message) -> None:
     await message.answer(f"Your id is {message.from_user.id}")
 
 
-@dp.message(Command("removeMe"))
+@dp.message(Command("remove_me"))
 async def remove_me(message: Message) -> None:
     user = user_storages.get_user_by_telegram_id(message.from_user.id)
     if user.isUserExist():
