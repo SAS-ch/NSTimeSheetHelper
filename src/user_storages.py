@@ -67,7 +67,7 @@ def remove_user_by_telegram_id(user: User) -> None:
 def get_user_by_telegram_id(telegram_id: string) -> User:
     cursor.execute(f"SELECT * FROM Users WHERE telegram_id = '{telegram_id}'")
     user = cursor.fetchone()
-    return User(user[1], user[2], user[3], json.loads(user[4]), user[5])
+    return User(user[1], user[2], user[3], json.loads(user[4]), user[5], user[6])
 
 
 # на вход поступает такая строка "9:00-12:00 13:00-17:30"

@@ -118,7 +118,7 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, de
             lunch_end = (datetime.combine(date.today(), lunch_end) + timedelta(minutes=extra_minutes)).time()
             work_end = (datetime.combine(date.today(), work_end) + timedelta(minutes=extra_minutes)).time()
             work_end_reduced = (
-                    datetime.combine(date.today(), work_end_reduced) - timedelta(minutes=extra_minutes)).time()
+                    datetime.combine(date.today(), work_end_reduced) + timedelta(minutes=extra_minutes)).time()
 
         row = day + 7  # Because the data starts from row 8
         sheet[f"A{row}"] = day
