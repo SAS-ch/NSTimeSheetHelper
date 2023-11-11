@@ -91,12 +91,12 @@ def fill_workbook_with_data_time_format(workbook, year, month, employee_name, de
         day_of_week = date(year, month, day).weekday()  # 0 = Понедельник
 
         # Get the work hours for this day of the week from the weekly_schedule
-        work_hours = weekly_schedule.get(day_of_week, {})
+        work_hours = weekly_schedule.get(f"{day_of_week}", {})
 
-        work_start = work_hours.get('work_start', time(8, 0))
-        lunch_start = work_hours.get('lunch_start', time(12, 0))
-        lunch_end = work_hours.get('lunch_end', time(13, 0))
-        work_end = work_hours.get('work_end', time(17, 0))
+        work_start = time.fromisoformat(work_hours.get('work_start', time(8, 0).isoformat()))
+        lunch_start = time.fromisoformat(work_hours.get('lunch_start', time(12, 0).isoformat()))
+        lunch_end = time.fromisoformat(work_hours.get('lunch_end', time(13, 0).isoformat()))
+        work_end = time.fromisoformat(work_hours.get('work_end', time(17, 0).isoformat()))
 
         work_end_datetime = datetime.combine(date.today(), work_end)
 

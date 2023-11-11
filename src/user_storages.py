@@ -80,10 +80,10 @@ def parse_schedule(schedule_str: str) -> dict:
     lunch_end_str, work_end_str, = second_work_period.split("-")
 
     # Преобразуем строки времени в объекты time
-    work_start = time(int(work_start_str.split(":")[0]), int(work_start_str.split(":")[1]))
-    work_end = time(int(work_end_str.split(":")[0]), int(work_end_str.split(":")[1]))
-    lunch_start = time(int(lunch_start_str.split(":")[0]), int(lunch_start_str.split(":")[1]))
-    lunch_end = time(int(lunch_end_str.split(":")[0]), int(lunch_end_str.split(":")[1]))
+    work_start = time(int(work_start_str.split(":")[0]), int(work_start_str.split(":")[1])).isoformat()
+    work_end = time(int(work_end_str.split(":")[0]), int(work_end_str.split(":")[1])).isoformat()
+    lunch_start = time(int(lunch_start_str.split(":")[0]), int(lunch_start_str.split(":")[1])).isoformat()
+    lunch_end = time(int(lunch_end_str.split(":")[0]), int(lunch_end_str.split(":")[1])).isoformat()
 
     # Возвращаем словарь с временами
     return {

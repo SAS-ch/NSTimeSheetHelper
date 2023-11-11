@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import logging
+import os
 import sys
 
 import openpyxl
@@ -77,6 +78,9 @@ async def get_time_sheet(message: Message) -> None:
     await message.answer_document(
         FSInputFile(f"../generated/g{user.telegram_id}_{year}_{month}.pdf",
                     f"Табель_{user.name}_за_{MONTHS_RU[month]}_{year}год.pdf"))
+    # remove generate file from filesystem
+    os.remove(f"../generated/g{user.telegram_id}_{year}_{month}.xlsx")
+    os.remove(f"../generated/g{user.telegram_id}_{year}_{month}.pdf")
 
 
 @dp.message(Command("get_my_id"))
@@ -169,7 +173,7 @@ async def setting_working_time_for_Thursday(message: Message, state: FSMContext)
 async def setting_working_time_for_Friday(message: Message, state: FSMContext) -> None:
     await state.update_data(working_time_for_Friday=message.text)
     await message.answer(
-        f"Так, теперь скажи мне нужно ли при генерации табелей тебе немного рандомить время обеда, прихода и ухода с работы? (Если у тебя указано время прихода 9:30 то может сгенерировать 9:15, 9:20, 9:25, 9:30, 9:35, 9:40, 9:45) \n Напиши 'Да' или 'Нет'")
+        f"Так, теперь скажи мне нужно ли при генерации табелей тебе немного рандомить время обеда, прихода и ухода с работы? (Если у тебя указано время прихода 9:30 то может сгенерировать 9:30, 9:35, 9:40, 9:45) \n Напиши 'Да' или 'Нет'")
     await state.set_state(Form.setting_need_to_randomize)
 
 
@@ -189,11 +193,11 @@ async def users_submitting(message: Message, state: FSMContext) -> None:
     if message.text.lower() == "да":
         await state.set_state(Form.ok)
 
-        weekly_schedule = {1: user_storages.parse_schedule(user_data['working_time_for_Monday']),
-                           2: user_storages.parse_schedule(user_data['working_time_for_Tuesday']),
-                           3: user_storages.parse_schedule(user_data['working_time_for_Wednesday']),
-                           4: user_storages.parse_schedule(user_data['working_time_for_Thursday']),
-                           5: user_storages.parse_schedule(user_data['working_time_for_Friday'])}
+        weekly_schedule = {0: user_storages.parse_schedule(user_data['working_time_for_Monday']),
+                           1: user_storages.parse_schedule(user_data['working_time_for_Tuesday']),
+                           2: user_storages.parse_schedule(user_data['working_time_for_Wednesday']),
+                           3: user_storages.parse_schedule(user_data['working_time_for_Thursday']),
+                           4: user_storages.parse_schedule(user_data['working_time_for_Friday'])}
 
         user = user_storages.User(
             user_data['name'],
